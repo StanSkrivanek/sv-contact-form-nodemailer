@@ -9,10 +9,8 @@
 	 * @type {ActionData}
 	 */
 	export let form;
-	$: data = form?.data;
-	$: console.log('🚀 ~ file: ContactForm.svelte:12 ~ form:', form);
-	$: console.log('🚀 ~ file: ContactForm.svelte:13 ~ data:', data);
 
+	$: data = form?.data;
 	$: selectedServices = [];
 	$: selectedBudget = '';
 
