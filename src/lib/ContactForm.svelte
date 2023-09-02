@@ -9,18 +9,12 @@
 	 * @type {ActionData}
 	 */
 	export let form;
-	$: console.log('🚀 ~ file: ContactForm.svelte:12 ~ form:', form);
 	$: data = form?.data;
-	// Create stores for checkbox and radio input to return values if errors occurs and user needs to correct them (otherwise values would be lost)
-	// let selectedServices = [];
-	// let selectedBudget = '';
+	$: console.log('🚀 ~ file: ContactForm.svelte:12 ~ form:', form);
+	$: console.log('🚀 ~ file: ContactForm.svelte:13 ~ data:', data);
 
 	$: selectedServices = [];
 	$: selectedBudget = '';
-
-	// $: console.log('🚀 ~ file: ContactForm.svelte:21 ~ selectedBudget:', selectedBudget);
-	// $: console.log('🚀 ~ file: ContactForm.svelte:20 ~ selectedServices:', selectedServices);
-	// $: console.log(form?.data.service.includes('development'));
 
 	// onMount - get initial values for font size and textarea height to calculate height on input change when new line is added
 	onMount(() => {
@@ -49,22 +43,7 @@
 </script>
 
 <div>
-	<form
-		method="POST"
-		class="text-2xl sm:text-4xl font-light sm:font-thin uppercase"
-		use:enhance={() => {
-			if (form?.success === true) {
-				form?.reset();
-				// return async ({ update }) => {
-				// 	await update({
-				//     // ...form,
-				// 		selectedServices: [],
-				// 		selectedBudget: ''
-				// 	});
-				// };
-			}
-		}}
-	>
+	<form method="POST" class="text-2xl sm:text-4xl font-light sm:font-thin uppercase" use:enhance>
 		<div class=" w-full mb-8 items-baseline">
 			<div class="whitespace-nowrap mb-4 inline-block text-[--pink]">Hi! My name is</div>
 			<input
@@ -72,7 +51,7 @@
 				name="name"
 				id="name"
 				placeholder="Type your name*"
-				value={data?.name || ''}
+				value={form?.errors ? data?.name : ''}
 				required
 				class="w-full bg-inherit border-b border-b-slate-500 focus:outline-none focus:rounded-md focus:ring-1 focus:ring-inset focus:ring-[--pink] focus:p-1 focus:border-none"
 			/>
@@ -253,7 +232,7 @@
 				name="message"
 				id="message"
 				placeholder="Type your request* "
-				value={data?.message || ''}
+				value={form?.errors ? data?.message : ''}
 				required
 				class="resize-none w-full bg-inherit border-b border-b-slate-500 pb-4 focus:border-none focus:outline-none focus:rounded-md focus:ring focus:ring-inset focus:ring-[--pink] focus:p-2"
 			/>

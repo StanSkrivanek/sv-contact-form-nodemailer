@@ -5,11 +5,11 @@ export const actions = {
 		const formData = await request.formData();
 
 		const contactEmailData = {
-			name: formData.get('name') ?? '',
-			email: formData.get('email') ?? '',
-			service: formData.getAll('service') ?? [],
-			budget: formData.get('budget') ?? '',
-			message: formData.get('message') ?? ''
+			name: formData.get('name'),
+			email: formData.get('email'),
+			service: formData.getAll('service'),
+			budget: formData.get('budget'),
+			message: formData.get('message')
 		};
 		try {
 			// try validate data
@@ -25,6 +25,7 @@ export const actions = {
 				data: rest
 			};
 		}
+		console.log(contactEmailData);
 		return {
 			// if data pass zod validatin -> return success
 			success: true,
