@@ -29,6 +29,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"nodemailer": "^6.9.4",
 		"zod": "^3.22.2"
 	}
 }
