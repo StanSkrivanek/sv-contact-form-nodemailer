@@ -28,15 +28,9 @@ export const actions = {
 		// else
 		return {
 			success: true,
-            // prevent [ctx].data from being undefined
-            // Is there any other way to do this?
-			data: {
-				name: '',
-				email: '',
-				service: [],
-				budget: '',
-				message: ''
-			}
+			// prevent [ctx].data from being undefined
+			// Is there any other way to do this?
+			// data: contactEmailData
 		};
 	}
 };

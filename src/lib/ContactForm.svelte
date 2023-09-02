@@ -1,172 +1,267 @@
 <script>
-  // @ts-nocheck
+	// @ts-nocheck
 
-  import { enhance } from "$app/forms";
+	import { enhance } from '$app/forms';
+	// import { ActionData } from "$app/types";
+	import { onMount } from 'svelte';
 
-  // import { ActionData } from "$app/types";
-  import { onMount } from "svelte";
-  import { writable } from "svelte/store";
+	/**
+	 * @type {ActionData}
+	 */
+	export let form;
 
-  /**
-   * @type {ActionData}
-   */
-  export let form;
+	// Create stores for checkbox and radio input to return values if errors occurs and user needs to correct them (otherwise values would be lost)
+	let selectedServices = [];
+	let selectedBudget = '';
 
-  // Create stores for checkbox and radio input to return values if errors occurs and user needs to correct them (otherwise values would be lost)
-  const selectedServices = writable([]);
-  const selectedBudget = writable("");
+	$: selectedServices;
+	$: selectedBudget;
 
-  // onMount - get initial values for font size and textarea height to calculate height on input change when new line is added
-  onMount(() => {
-    const textareaEl = document.querySelector("textarea");
-    if (!textareaEl) return;
+	$: console.log('🚀 ~ file: ContactForm.svelte:21 ~ selectedBudget:', selectedBudget);
+	$: console.log('🚀 ~ file: ContactForm.svelte:20 ~ selectedServices:', selectedServices);
 
-    // GET - dynamic font size on load as number
-    let fontSize = Number(window.getComputedStyle(textareaEl).getPropertyValue("font-size").slice(0, -2));
+	// onMount - get initial values for font size and textarea height to calculate height on input change when new line is added
+	onMount(() => {
+		const textareaEl = document.querySelector('textarea');
+		if (!textareaEl) return;
 
-    // set textarea height init value
-    const textAreaHeight = calcHeight(textareaEl.value) + "px";
-    textareaEl.style.height = textAreaHeight;
+		// GET - dynamic font size on load as number
+		let fontSize = Number(
+			window.getComputedStyle(textareaEl).getPropertyValue('font-size').slice(0, -2)
+		);
 
-    // Calculate height of textarea
-    function calcHeight(value = "") {
-      let numberOfLineBreaks = (value.match(/\n/g) || []).length;
-      let newHeight = fontSize + numberOfLineBreaks * fontSize * 1.1 + 16;
-      return newHeight;
-    }
-    textareaEl?.addEventListener("keyup", () => {
-      textareaEl.style.height = calcHeight(textareaEl.value) + "px";
-    });
-  });
+		// set textarea height init value
+		const textAreaHeight = calcHeight(textareaEl.value) + 'px';
+		textareaEl.style.height = textAreaHeight;
 
-  // FUNCTIONS
+		// Calculate height of textarea
+		function calcHeight(value = '') {
+			let numberOfLineBreaks = (value.match(/\n/g) || []).length;
+			let newHeight = fontSize + numberOfLineBreaks * fontSize * 1.1 + 16;
+			return newHeight;
+		}
+		textareaEl?.addEventListener('keyup', () => {
+			textareaEl.style.height = calcHeight(textareaEl.value) + 'px';
+		});
+	});
 
-  // Listen to "service" checkbox input changes and update store states accordingly (add/remove selected service)
-  function handleServiceChange(event) {
-    const selectedService = event.target.value;
+	// FUNCTIONS
 
-    selectedServices.update((services) => {
-      if (services.includes(selectedService)) {
-        return services.filter((service) => service !== selectedService);
-      } else {
-        return [...services, selectedService];
-      }
-    });
-  }
+	// Listen to "service" checkbox input changes and update store states accordingly (add/remove selected service)
+	// function handleServiceChange(event) {
+	// 	selectedService = event.target.value;
 
-  // listen to "budget" radio input changes and update store state accordingly (set selected budget)
-  function handleBudgetChange(event) {
-    selectedBudget.set(event.target.value);
-  }
+	// 	selectedServices.update((services) => {
+	// 		if (services.includes(selectedService)) {
+	// 			return services.filter((service) => service !== selectedService);
+	// 		} else {
+	// 			return [...services, selectedService];
+	// 		}
+	// 	});
+	// }
+
+	// listen to "budget" radio input changes and update store state accordingly (set selected budget)
+	function handleBudgetChange(event) {
+		selectedBudget.set(event.target.value);
+	}
 </script>
 
 <div>
-  <form
-    method="POST"
-    class="text-2xl sm:text-4xl font-light sm:font-thin uppercase"
-    use:enhance={() => {
-      if (form?.success === true) {
-        alert("Thank you for your request. I will get back to you as soon as possible.");
-        return async ({ update }) => {
-          await update({
-            reset: true,
-            $selectedServices: [],
-            $selectedBudget: "",
-          });
-        };
-      }
-      // alert("Something went wrong. Please try again.");
-      return async ({ update }) => {
-        await update({ reset: false });
-      };
-    }}
-  >
-    <div class=" w-full mb-8 items-baseline">
-      <div class="whitespace-nowrap mb-4 inline-block text-[--pink]">Hi! My name is</div>
-      <input type="text" name="name" id="name" placeholder="Type your name*" value={form?.data.name || ""} required class="w-full bg-inherit border-b border-b-slate-500 focus:outline-none focus:rounded-md focus:ring-1 focus:ring-inset focus:ring-[--pink] focus:p-1 focus:border-none" />
-      {#if form?.errors?.name}
-        <span class="text-sm font-normal bg-rose-500 p-2">{form?.errors?.name[0]}</span>
-      {/if}
-    </div>
+	<form method="POST" class="text-2xl sm:text-4xl font-light sm:font-thin uppercase" use:enhance>
+		<div class=" w-full mb-8 items-baseline">
+			<div class="whitespace-nowrap mb-4 inline-block text-[--pink]">Hi! My name is</div>
+			<input
+				type="text"
+				name="name"
+				id="name"
+				placeholder="Type your name*"
+				value={form?.data.name || ''}
+				required
+				class="w-full bg-inherit border-b border-b-slate-500 focus:outline-none focus:rounded-md focus:ring-1 focus:ring-inset focus:ring-[--pink] focus:p-1 focus:border-none"
+			/>
+			{#if form?.errors?.name}
+				<span class="text-sm font-normal bg-rose-500 p-2">{form?.errors?.name[0]}</span>
+			{/if}
+		</div>
 
-    <fieldset class="w-full mb-8">
-      <legend class="mb-6 whitespace-nowrap md:mr-4 inline-block text-[--pink]">I'm requesting:</legend>
-      <div class="flex flex-wrap w-full gap-4">
-        <!-- accessibility : use `label id` and `input aria-labelledby` for correct voiceover -->
-        <label id="service-label-1" class="focus-within:border-[--pink] text-base sm:text-2xl whitespace-nowrap border-2 border-slate-500 rounded-full py-2 px-4 cursor-pointer focus:ring-1">
-          <input type="checkbox" name="service" id="service-1" value="development" aria-labelledby="service-label-1" on:change={handleServiceChange} checked={$selectedServices.includes("development") ? "true" : ""} class="" />
-          Website Development
-        </label>
-        <label id="service-label-2" class="focus-within:border-[--pink] text-base sm:text-2xl whitespace-nowrap border-2 border-slate-500 rounded-full py-2 px-4 cursor-pointer">
-          <input type="checkbox" name="service" id="service-2" value="design" aria-labelledby="service-label-2" on:change={handleServiceChange} checked={$selectedServices.includes("design") ? "true" : ""} class="" />
-          Website Design
-        </label>
-        <label id="service-label-3" class="focus-within:border-[--pink] text-base sm:text-2xl whitespace-nowrap border-2 border-slate-500 rounded-full py-2 px-4 cursor-pointer">
-          <input type="checkbox" name="service" id="service-3" value="maintenance" aria-labelledby="service-label-3" on:change={handleServiceChange} checked={$selectedServices.includes("maintenance") ? "true" : ""} class="" />
-          Website Maintenance
-        </label>
-      </div>
-      {#if form?.errors?.service}
-        <span class="text-sm font-normal bg-rose-500 p-2">{form?.errors?.service}</span>
-      {/if}
-    </fieldset>
+		<fieldset class="w-full mb-8">
+			<legend class="mb-6 whitespace-nowrap md:mr-4 inline-block text-[--pink]"
+				>I'm requesting:</legend
+			>
+			<div class="flex flex-wrap w-full gap-4">
+				<!-- accessibility : use `label id` and `input aria-labelledby` for correct voiceover -->
+				<label
+					id="service-label-1"
+					class="focus-within:border-[--pink] text-base sm:text-2xl whitespace-nowrap border-2 border-slate-500 rounded-full py-2 px-4 cursor-pointer focus:ring-1"
+				>
+					<input
+						type="checkbox"
+						name="service"
+						id="service-1"
+						value="development"
+						aria-labelledby="service-label-1"
+						bind:group={selectedServices}
+						class=""
+					/>
+					Website Development
+				</label>
+				<label
+					id="service-label-2"
+					class="focus-within:border-[--pink] text-base sm:text-2xl whitespace-nowrap border-2 border-slate-500 rounded-full py-2 px-4 cursor-pointer"
+				>
+					<input
+						type="checkbox"
+						name="service"
+						id="service-2"
+						value="design"
+						aria-labelledby="service-label-2"
+						bind:group={selectedServices}
+						class=""
+					/>
+					Website Design
+				</label>
+				<label
+					id="service-label-3"
+					class="focus-within:border-[--pink] text-base sm:text-2xl whitespace-nowrap border-2 border-slate-500 rounded-full py-2 px-4 cursor-pointer"
+				>
+					<input
+						type="checkbox"
+						name="service"
+						id="service-3"
+						value="maintenance"
+						aria-labelledby="service-label-3"
+						bind:group={selectedServices}
+						class=""
+					/>
+					Website Maintenance
+				</label>
+			</div>
+			{#if form?.errors?.service}
+				<span class="text-sm font-normal bg-rose-500 p-2">{form?.errors?.service}</span>
+			{/if}
+		</fieldset>
 
-    <fieldset class="w-full mb-8">
-      <legend class="mb-6 whitespace-nowrap md:mr-4 inline-block text-[--pink]">My budgest is:</legend>
-      <div class="flex w-full flex-wrap gap-4">
-        <label for="1500" class="focus-within:border-[--pink] text-base sm:text-2xl whitespace-nowrap border-2 border-slate-500 rounded-full py-2 px-4 cursor-pointer">
-          <input type="radio" name="budget" id="1500" value={form?.budget || "500-1.5k"} class="" on:change={handleBudgetChange} checked={$selectedBudget === "500-1.5k"} />
-          € 500 - 1.5k
-        </label>
+		<fieldset class="w-full mb-8">
+			<legend class="mb-6 whitespace-nowrap md:mr-4 inline-block text-[--pink]"
+				>My budgest is:</legend
+			>
+			<div class="flex w-full flex-wrap gap-4">
+				<label
+					for="1500"
+					class="focus-within:border-[--pink] text-base sm:text-2xl whitespace-nowrap border-2 border-slate-500 rounded-full py-2 px-4 cursor-pointer"
+				>
+					<input
+						type="radio"
+						name="budget"
+						id="1500"
+						value="500-1.5k"
+						class=""
+						bind:group={selectedBudget}
+					/>
+					€ 500 - 1.5k
+				</label>
 
-        <label for="3000" class="focus-within:border-[--pink] text-base sm:text-2xl whitespace-nowrap border-2 border-slate-500 rounded-full py-2 px-4 cursor-pointer">
-          <input type="radio" name="budget" id="3000" value="1.5k-3k" class="" on:change={handleBudgetChange} checked={$selectedBudget === "1.5k-3k"} />
-          € 1.5k - 3k
-        </label>
+				<label
+					for="3000"
+					class="focus-within:border-[--pink] text-base sm:text-2xl whitespace-nowrap border-2 border-slate-500 rounded-full py-2 px-4 cursor-pointer"
+				>
+					<input
+						type="radio"
+						name="budget"
+						id="3000"
+						value="1.5k-3k"
+						class=""
+						bind:group={selectedBudget}
+					/>
+					€ 1.5k - 3k
+				</label>
 
-        <label for="5000" class="focus-within:border-[--pink] text-base sm:text-2xl whitespace-nowrap border-2 border-slate-500 rounded-full py-2 px-4 cursor-pointer">
-          <input type="radio" name="budget" id="5000" value="3k-5k" class="" on:change={handleBudgetChange} checked={$selectedBudget === "3k-5k"} />
-          € 3k - 5k
-        </label>
+				<label
+					for="5000"
+					class="focus-within:border-[--pink] text-base sm:text-2xl whitespace-nowrap border-2 border-slate-500 rounded-full py-2 px-4 cursor-pointer"
+				>
+					<input
+						type="radio"
+						name="budget"
+						id="5000"
+						value="3k-5k"
+						class=""
+						bind:group={selectedBudget}
+					/>
+					€ 3k - 5k
+				</label>
 
-        <label for="10000" class="focus-within:border-[--pink] text-base sm:text-2xl whitespace-nowrap border-2 border-slate-500 rounded-full py-2 px-4 cursor-pointer">
-          <input type="radio" name="budget" id="10000" value="5k-10k" class="" on:change={handleBudgetChange} checked={$selectedBudget === "5k-10k"} />
-          € 5k - 10k
-        </label>
+				<label
+					for="10000"
+					class="focus-within:border-[--pink] text-base sm:text-2xl whitespace-nowrap border-2 border-slate-500 rounded-full py-2 px-4 cursor-pointer"
+				>
+					<input
+						type="radio"
+						name="budget"
+						id="10000"
+						value="5k-10k"
+						class=""
+						bind:group={selectedBudget}
+					/>
+					€ 5k - 10k
+				</label>
 
-        <label for="max" class="focus-within:border-[--pink] text-base sm:text-2xl whitespace-nowrap border-2 border-slate-500 rounded-full py-2 px-4 cursor-pointer">
-          <input type="radio" name="budget" id="max" value="10k+" class="" on:change={handleBudgetChange} checked={$selectedBudget === "10+k"} />
-          € 10k+
-        </label>
-      </div>
-      {#if form?.errors?.budget}
-        <span class="text-sm font-normal bg-rose-500 p-2">{form?.errors?.budget}</span>
-      {/if}
-    </fieldset>
+				<label
+					for="max"
+					class="focus-within:border-[--pink] text-base sm:text-2xl whitespace-nowrap border-2 border-slate-500 rounded-full py-2 px-4 cursor-pointer"
+				>
+					<input
+						type="radio"
+						name="budget"
+						id="max"
+						value="10k+"
+						class=""
+						bind:group={selectedBudget}
+					/>
+					€ 10k+
+				</label>
+			</div>
+			{#if form?.errors?.budget}
+				<span class="text-sm font-normal bg-rose-500 p-2">{form?.errors?.budget}</span>
+			{/if}
+		</fieldset>
 
-    <div class="w-full mb-8 items-baseline">
-      <div class=" whitespace-nowrap mb-4 inline-block text-[--pink]">You can reach me at:</div>
-      <input type="email" name="email" id="email" placeholder="Type your contact email*" value={form?.data.email || ""} required class=" w-full h-full bg-inherit border-b border-b-slate-500 focus:border-none focus:outline-none focus:rounded-md focus:ring focus:ring-inset focus:ring-[--pink] focus:p-2" />
-      {#if form?.errors?.email}
-        <span class="text-sm font-normal bg-rose-500 p-2">{form?.errors?.email}</span>
-      {/if}
-    </div>
+		<div class="w-full mb-8 items-baseline">
+			<div class=" whitespace-nowrap mb-4 inline-block text-[--pink]">You can reach me at:</div>
+			<input
+				type="email"
+				name="email"
+				id="email"
+				placeholder="Type your contact email*"
+				value={form?.data.email || ''}
+				required
+				class=" w-full h-full bg-inherit border-b border-b-slate-500 focus:border-none focus:outline-none focus:rounded-md focus:ring focus:ring-inset focus:ring-[--pink] focus:p-2"
+			/>
+			{#if form?.errors?.email}
+				<span class="text-sm font-normal bg-rose-500 p-2">{form?.errors?.email}</span>
+			{/if}
+		</div>
 
-    <div class="w-full mb-8 items-baseline">
-      <div class="whitespace-nowrap mr-4 mb-6 inline-block text-[--pink]">Here is brief info:</div>
-      <textarea name="message" id="message" placeholder="Type your request* " value={form?.data.message || ""} required class="resize-none w-full bg-inherit border-b border-b-slate-500 pb-4 focus:border-none focus:outline-none focus:rounded-md focus:ring focus:ring-inset focus:ring-[--pink] focus:p-2" />
-      {#if form?.errors?.message}
-        <span class="text-sm font-normal bg-rose-500 p-2">{form?.errors?.message}</span>
-      {/if}
-    </div>
+		<div class="w-full mb-8 items-baseline">
+			<div class="whitespace-nowrap mr-4 mb-6 inline-block text-[--pink]">Here is brief info:</div>
+			<textarea
+				name="message"
+				id="message"
+				placeholder="Type your request* "
+				value={form?.data.message || ''}
+				required
+				class="resize-none w-full bg-inherit border-b border-b-slate-500 pb-4 focus:border-none focus:outline-none focus:rounded-md focus:ring focus:ring-inset focus:ring-[--pink] focus:p-2"
+			/>
+			{#if form?.errors?.message}
+				<span class="text-sm font-normal bg-rose-500 p-2">{form?.errors?.message}</span>
+			{/if}
+		</div>
 
-    <div>
-      <button type="submit">Send</button>
-    </div>
-  </form>
+		<div>
+			<button type="submit">Send</button>
+		</div>
+	</form>
 </div>
 
-
 <style>
-
 </style>
