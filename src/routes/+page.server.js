@@ -25,12 +25,14 @@ export const actions = {
 				data: rest
 			};
 		}
-		// else
 		return {
+			// if data pass zod validatin -> return success
 			success: true,
+			// after successful submission I'm getting error
+			// Unhandled Promise Rejection: TypeError: undefined is not an object (evaluating 'ctx[0]?.data.name')
 			// prevent [ctx].data from being undefined
-			// Is there any other way to do this?
-			// data: contactEmailData
+			// Is there any other way than do this?
+			// data: { ...contactEmailData }
 		};
 	}
 };

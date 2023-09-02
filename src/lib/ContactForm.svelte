@@ -10,7 +10,7 @@
 	 */
 	export let form;
 	$: console.log('🚀 ~ file: ContactForm.svelte:12 ~ form:', form);
-
+	$: data = form?.data;
 	// Create stores for checkbox and radio input to return values if errors occurs and user needs to correct them (otherwise values would be lost)
 	// let selectedServices = [];
 	// let selectedBudget = '';
@@ -46,12 +46,25 @@
 			textareaEl.style.height = calcHeight(textareaEl.value) + 'px';
 		});
 	});
-
-
 </script>
 
 <div>
-	<form method="POST" class="text-2xl sm:text-4xl font-light sm:font-thin uppercase" use:enhance>
+	<form
+		method="POST"
+		class="text-2xl sm:text-4xl font-light sm:font-thin uppercase"
+		use:enhance={() => {
+			if (form?.success === true) {
+				form?.reset();
+				// return async ({ update }) => {
+				// 	await update({
+				//     // ...form,
+				// 		selectedServices: [],
+				// 		selectedBudget: ''
+				// 	});
+				// };
+			}
+		}}
+	>
 		<div class=" w-full mb-8 items-baseline">
 			<div class="whitespace-nowrap mb-4 inline-block text-[--pink]">Hi! My name is</div>
 			<input
@@ -59,7 +72,7 @@
 				name="name"
 				id="name"
 				placeholder="Type your name*"
-				value={form?.data.name || ''}
+				value={data?.name || ''}
 				required
 				class="w-full bg-inherit border-b border-b-slate-500 focus:outline-none focus:rounded-md focus:ring-1 focus:ring-inset focus:ring-[--pink] focus:p-1 focus:border-none"
 			/>
@@ -84,7 +97,7 @@
 						id="service-1"
 						value="development"
 						aria-labelledby="service-label-1"
-						checked={form?.data.service?.includes('development') || false}
+						checked={data?.service?.includes('development') || false}
 						bind:group={selectedServices}
 						class=""
 					/>
@@ -100,7 +113,7 @@
 						id="service-2"
 						value="design"
 						aria-labelledby="service-label-2"
-						checked={form?.data.service?.includes('design') || false}
+						checked={data?.service?.includes('design') || false}
 						bind:group={selectedServices}
 						class=""
 					/>
@@ -116,7 +129,7 @@
 						id="service-3"
 						value="maintenance"
 						aria-labelledby="service-label-3"
-						checked={form?.data.service?.includes('maintenance') || false}
+						checked={data?.service?.includes('maintenance') || false}
 						bind:group={selectedServices}
 						class=""
 					/>
@@ -142,7 +155,7 @@
 						name="budget"
 						id="1500"
 						value="500-1.5k"
-						checked={form?.data.budget === '500-1.5k' || false}
+						checked={data?.budget === '500-1.5k' || false}
 						bind:group={selectedBudget}
 						class=""
 					/>
@@ -158,7 +171,7 @@
 						name="budget"
 						id="3000"
 						value="1.5k-3k"
-						checked={form?.data.budget === '1.5k-3k' || false}
+						checked={data?.budget === '1.5k-3k' || false}
 						bind:group={selectedBudget}
 						class=""
 					/>
@@ -174,7 +187,7 @@
 						name="budget"
 						id="5000"
 						value="3k-5k"
-						checked={form?.data.budget === '3k-5k' || false}
+						checked={data?.budget === '3k-5k' || false}
 						bind:group={selectedBudget}
 						class=""
 					/>
@@ -190,7 +203,7 @@
 						name="budget"
 						id="10000"
 						value="5k-10k"
-						checked={form?.data.budget === '5k-10k' || false}
+						checked={data?.budget === '5k-10k' || false}
 						bind:group={selectedBudget}
 						class=""
 					/>
@@ -206,7 +219,7 @@
 						name="budget"
 						id="max"
 						value="10k+"
-						checked={form?.data.budget === '10k+' || false}
+						checked={data?.budget === '10k+' || false}
 						bind:group={selectedBudget}
 						class=""
 					/>
@@ -225,7 +238,7 @@
 				name="email"
 				id="email"
 				placeholder="Type your contact email*"
-				value={form?.data.email || ''}
+				value={data?.email || ''}
 				required
 				class=" w-full h-full bg-inherit border-b border-b-slate-500 focus:border-none focus:outline-none focus:rounded-md focus:ring focus:ring-inset focus:ring-[--pink] focus:p-2"
 			/>
@@ -240,7 +253,7 @@
 				name="message"
 				id="message"
 				placeholder="Type your request* "
-				value={form?.data.message || ''}
+				value={data?.message || ''}
 				required
 				class="resize-none w-full bg-inherit border-b border-b-slate-500 pb-4 focus:border-none focus:outline-none focus:rounded-md focus:ring focus:ring-inset focus:ring-[--pink] focus:p-2"
 			/>
