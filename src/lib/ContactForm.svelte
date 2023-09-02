@@ -9,16 +9,18 @@
 	 * @type {ActionData}
 	 */
 	export let form;
+	$: console.log('🚀 ~ file: ContactForm.svelte:12 ~ form:', form);
 
 	// Create stores for checkbox and radio input to return values if errors occurs and user needs to correct them (otherwise values would be lost)
-	let selectedServices = [];
-	let selectedBudget = '';
+	// let selectedServices = [];
+	// let selectedBudget = '';
 
-	$: selectedServices;
-	$: selectedBudget;
+	$: selectedServices = [];
+	$: selectedBudget = '';
 
-	$: console.log('🚀 ~ file: ContactForm.svelte:21 ~ selectedBudget:', selectedBudget);
-	$: console.log('🚀 ~ file: ContactForm.svelte:20 ~ selectedServices:', selectedServices);
+	// $: console.log('🚀 ~ file: ContactForm.svelte:21 ~ selectedBudget:', selectedBudget);
+	// $: console.log('🚀 ~ file: ContactForm.svelte:20 ~ selectedServices:', selectedServices);
+	// $: console.log(form?.data.service.includes('development'));
 
 	// onMount - get initial values for font size and textarea height to calculate height on input change when new line is added
 	onMount(() => {
@@ -45,25 +47,7 @@
 		});
 	});
 
-	// FUNCTIONS
 
-	// Listen to "service" checkbox input changes and update store states accordingly (add/remove selected service)
-	// function handleServiceChange(event) {
-	// 	selectedService = event.target.value;
-
-	// 	selectedServices.update((services) => {
-	// 		if (services.includes(selectedService)) {
-	// 			return services.filter((service) => service !== selectedService);
-	// 		} else {
-	// 			return [...services, selectedService];
-	// 		}
-	// 	});
-	// }
-
-	// listen to "budget" radio input changes and update store state accordingly (set selected budget)
-	function handleBudgetChange(event) {
-		selectedBudget.set(event.target.value);
-	}
 </script>
 
 <div>
@@ -100,6 +84,7 @@
 						id="service-1"
 						value="development"
 						aria-labelledby="service-label-1"
+						checked={form?.data.service?.includes('development') || false}
 						bind:group={selectedServices}
 						class=""
 					/>
@@ -115,6 +100,7 @@
 						id="service-2"
 						value="design"
 						aria-labelledby="service-label-2"
+						checked={form?.data.service?.includes('design') || false}
 						bind:group={selectedServices}
 						class=""
 					/>
@@ -130,6 +116,7 @@
 						id="service-3"
 						value="maintenance"
 						aria-labelledby="service-label-3"
+						checked={form?.data.service?.includes('maintenance') || false}
 						bind:group={selectedServices}
 						class=""
 					/>
@@ -155,8 +142,9 @@
 						name="budget"
 						id="1500"
 						value="500-1.5k"
-						class=""
+						checked={form?.data.budget === '500-1.5k' || false}
 						bind:group={selectedBudget}
+						class=""
 					/>
 					€ 500 - 1.5k
 				</label>
@@ -170,8 +158,9 @@
 						name="budget"
 						id="3000"
 						value="1.5k-3k"
-						class=""
+						checked={form?.data.budget === '1.5k-3k' || false}
 						bind:group={selectedBudget}
+						class=""
 					/>
 					€ 1.5k - 3k
 				</label>
@@ -185,8 +174,9 @@
 						name="budget"
 						id="5000"
 						value="3k-5k"
-						class=""
+						checked={form?.data.budget === '3k-5k' || false}
 						bind:group={selectedBudget}
+						class=""
 					/>
 					€ 3k - 5k
 				</label>
@@ -200,8 +190,9 @@
 						name="budget"
 						id="10000"
 						value="5k-10k"
-						class=""
+						checked={form?.data.budget === '5k-10k' || false}
 						bind:group={selectedBudget}
+						class=""
 					/>
 					€ 5k - 10k
 				</label>
@@ -215,8 +206,9 @@
 						name="budget"
 						id="max"
 						value="10k+"
-						class=""
+						checked={form?.data.budget === '10k+' || false}
 						bind:group={selectedBudget}
+						class=""
 					/>
 					€ 10k+
 				</label>
