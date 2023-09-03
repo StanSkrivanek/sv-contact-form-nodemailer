@@ -17,21 +17,7 @@ export const actions = {
 		try {
 			// try validate data
 			contactEmailSchema.parse(contactEmailData);
-
-			// if valid then
-			// email html template
-			// const html = `
-			// <div style="font-size: 1.2rem;">
-			// 	<p>Hi, my name is <b style="color: blue">${contactEmailData.name}</b> and I'm requesting these services</p>
-			// 	<p style="font-size: 2rem;"><b>Service:</b></p>
-			// 	<p style="font-size: 1.2rem; color: blue; line-height: 1.2rem;">${contactEmailData.service}</p>
-			// 	<p style="font-size: 2rem;"><b>My budget is</b></p>
-			// 	<p style="font-size: 1.2rem; color: blue; line-height: 1.2rem; "> ${contactEmailData.budget}</p>
-			// 	<p style="font-size: 2rem;"><b>Request message:</b></p>
-			// 	<p style="font-size: 1.2rem;">${contactEmailData.message}</p>
-			// 	<p style="font-size: 1.2rem;">You can contact me on ${contactEmailData.email}</p>
-			// </div>
-			// `;
+			// email HTML template
 			const html = `
 			<table>
 				<thead>

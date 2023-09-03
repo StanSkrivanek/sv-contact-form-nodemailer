@@ -19,24 +19,42 @@
 		const textareaEl = document.querySelector('textarea');
 		if (!textareaEl) return;
 
-		// GET - dynamic font size on load as number
-		let fontSize = Number(
-			window.getComputedStyle(textareaEl).getPropertyValue('font-size').slice(0, -2)
-		);
-
-		// set textarea height init value
-		const textAreaHeight = calcHeight(textareaEl.value) + 'px';
-		textareaEl.style.height = textAreaHeight;
-
-		// Calculate height of textarea
-		function calcHeight(value = '') {
-			let numberOfLineBreaks = (value.match(/\n/g) || []).length;
-			let newHeight = fontSize + numberOfLineBreaks * fontSize * 1.1 + 16;
-			return newHeight;
-		}
+		textareaEl.style.height = textareaEl.scrollHeight + 'px';
 		textareaEl?.addEventListener('keyup', () => {
-			textareaEl.style.height = calcHeight(textareaEl.value) + 'px';
+			// textareaEl.style.height = calcHeight(textareaEl.value) + 'px';
+			textareaEl.style.height = AutoSize(textareaEl);
 		});
+
+		// AUTOSIZE TEXAREA TEST
+		function AutoSize(textareaEl) {
+			// textareaEl.className += 'js-autosize';
+
+			function resize() {
+				// textareaEl.style.height = 'auto';
+
+				var height = textareaEl.scrollHeight;
+
+				if (window.getComputedStyle) {
+					var styles = window.getComputedStyle(textareaEl);
+
+					height -= parseInt(styles['padding-top']) + parseInt(styles['padding-bottom']);
+				}
+
+				textareaEl.style.height = height + 8 + 'px';
+			}
+
+			if (!textareaEl.oninput) {
+				textareaEl.oninput = function () {
+					resize();
+				};
+			} else {
+				textareaEl.onkeyup = function () {
+					resize();
+				};
+			}
+
+			return { textareaEl: textareaEl, resize: resize };
+		}
 	});
 </script>
 
@@ -51,7 +69,7 @@
 				placeholder="Type your name*"
 				value={form?.errors ? data?.name : ''}
 				required
-				class="w-full bg-inherit border-b border-b-slate-500 focus:outline-none focus:rounded-md focus:ring-1 focus:ring-inset focus:ring-[--pink] focus:p-1 focus:border-none"
+				class="w-full bg-inherit pb-2 border-b border-b-slate-500 focus:outline-none focus:ring-1 focus:ring-inset focus:ring-transparent focus:pb-2 focus:border-b-[--pink]"
 			/>
 			{#if form?.errors?.name}
 				<span class="text-sm font-normal bg-rose-500 p-2">{form?.errors?.name[0]}</span>
@@ -71,13 +89,12 @@
 					aria-labelledby="service-label-1"
 					checked={data?.service?.includes('development') || false}
 					bind:group={selectedServices}
-					
 				/>
 				<!-- accessibility : use `label id` and `input aria-labelledby` for correct voiceover -->
 				<label
 					id="service-label-1"
 					for="service-1"
-					class="text-base sm:text-2xl whitespace-nowrap border-2 border-slate-500 rounded-full py-2 px-4 cursor-pointer "
+					class="text-base sm:text-2xl whitespace-nowrap border-2 border-slate-500 rounded-full py-2 px-4 cursor-pointer"
 				>
 					Website Development
 				</label>
@@ -213,7 +230,7 @@
 				placeholder="Type your contact email*"
 				value={data?.email || ''}
 				required
-				class=" w-full h-full bg-inherit border-b border-b-slate-500 focus:border-none focus:outline-none focus:rounded-md focus:ring focus:ring-inset focus:ring-[--pink] focus:p-2"
+				class="w-full h-full bg-inherit pb-2 border-b border-b-slate-500 focus:outline-none focus:ring focus:ring-inset focus:ring-transparent focus:pb-2 focus:border-b-[--pink]"
 			/>
 			{#if form?.errors?.email}
 				<span class="text-sm font-normal bg-rose-500 p-2">{form?.errors?.email}</span>
@@ -223,12 +240,13 @@
 		<div class="w-full mb-8 items-baseline">
 			<div class="whitespace-nowrap mr-4 mb-6 inline-block text-[--pink]">Here is brief info:</div>
 			<textarea
+				rows="1"
 				name="message"
 				id="message"
 				placeholder="Type your request* "
 				value={form?.errors ? data?.message : ''}
 				required
-				class="resize-none w-full bg-inherit border-b border-b-slate-500 pb-4 focus:border-none focus:outline-none focus:rounded-md focus:ring focus:ring-inset focus:ring-[--pink] focus:p-2"
+				class="resize-none w-full bg-inherit pb-2 border-b border-b-slate-500 focus:outline-none focus:ring focus:ring-inset focus:ring-transparent focus:pb-2 focus:border-b-[--pink]"
 			/>
 			{#if form?.errors?.message}
 				<span class="text-sm font-normal bg-rose-500 p-2">{form?.errors?.message}</span>
@@ -236,12 +254,21 @@
 		</div>
 
 		<div class=" text-right">
-			<button type="submit" class="text-base sm:text-2xl whitespace-nowrap border-2 border-blue-500 bg-blue-500 rounded-full py-2 px-4 cursor-pointer hover:bg-blue-400 duration-200 hover:border-transparent">Send request</button>
+			<button
+				type="submit"
+				class="text-base sm:text-2xl whitespace-nowrap border-2 border-blue-500 bg-blue-500 rounded-full py-2 px-4 cursor-pointer hover:bg-blue-400 duration-200 hover:border-transparent"
+				>Send request</button
+			>
 		</div>
 	</form>
 </div>
 
 <style>
+	textarea {
+		overflow-wrap: break-word;
+		line-break: after-white-space;
+	}
+
 	input:checked + label {
 		border: 2px solid transparent;
 		background-color: var(--pink);
@@ -251,5 +278,12 @@
 	input[type='radio'] {
 		/* visibility: hidden; */
 		display: none;
+	}
+
+	/* force input style on autofill */
+	input:-webkit-autofill {
+		background-color: transparent !important;
+		-webkit-box-shadow: 0 0 0 80px black inset;
+		-webkit-text-fill-color: #fff !important;
 	}
 </style>
