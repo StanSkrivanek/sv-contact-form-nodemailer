@@ -62,54 +62,55 @@
 			<legend class="mb-6 whitespace-nowrap md:mr-4 inline-block text-[--pink]"
 				>I'm requesting:</legend
 			>
-			<div class="flex flex-wrap w-full gap-4">
+			<div class="flex flex-wrap w-full justify-start gap-4">
+				<input
+					type="checkbox"
+					name="service"
+					id="service-1"
+					value="development"
+					aria-labelledby="service-label-1"
+					checked={data?.service?.includes('development') || false}
+					bind:group={selectedServices}
+					
+				/>
 				<!-- accessibility : use `label id` and `input aria-labelledby` for correct voiceover -->
 				<label
 					id="service-label-1"
-					class="focus-within:border-[--pink] text-base sm:text-2xl whitespace-nowrap border-2 border-slate-500 rounded-full py-2 px-4 cursor-pointer focus:ring-1"
+					for="service-1"
+					class="text-base sm:text-2xl whitespace-nowrap border-2 border-slate-500 rounded-full py-2 px-4 cursor-pointer "
 				>
-					<input
-						type="checkbox"
-						name="service"
-						id="service-1"
-						value="development"
-						aria-labelledby="service-label-1"
-						checked={data?.service?.includes('development') || false}
-						bind:group={selectedServices}
-						class=""
-					/>
 					Website Development
 				</label>
+				<input
+					type="checkbox"
+					name="service"
+					id="service-2"
+					value="design"
+					aria-labelledby="service-label-2"
+					checked={data?.service?.includes('design') || false}
+					bind:group={selectedServices}
+				/>
 				<label
 					id="service-label-2"
+					for="service-2"
 					class="focus-within:border-[--pink] text-base sm:text-2xl whitespace-nowrap border-2 border-slate-500 rounded-full py-2 px-4 cursor-pointer"
 				>
-					<input
-						type="checkbox"
-						name="service"
-						id="service-2"
-						value="design"
-						aria-labelledby="service-label-2"
-						checked={data?.service?.includes('design') || false}
-						bind:group={selectedServices}
-						class=""
-					/>
 					Website Design
 				</label>
+				<input
+					type="checkbox"
+					name="service"
+					id="service-3"
+					value="maintenance"
+					aria-labelledby="service-label-3"
+					checked={data?.service?.includes('maintenance') || false}
+					bind:group={selectedServices}
+				/>
 				<label
 					id="service-label-3"
+					for="service-3"
 					class="focus-within:border-[--pink] text-base sm:text-2xl whitespace-nowrap border-2 border-slate-500 rounded-full py-2 px-4 cursor-pointer"
 				>
-					<input
-						type="checkbox"
-						name="service"
-						id="service-3"
-						value="maintenance"
-						aria-labelledby="service-label-3"
-						checked={data?.service?.includes('maintenance') || false}
-						bind:group={selectedServices}
-						class=""
-					/>
 					Website Maintenance
 				</label>
 			</div>
@@ -122,84 +123,79 @@
 			<legend class="mb-6 whitespace-nowrap md:mr-4 inline-block text-[--pink]"
 				>My budgest is:</legend
 			>
-			<div class="flex w-full flex-wrap gap-4">
+			<div class="flex w-full flex-wrap gap-4 justify-start">
+				<input
+					type="radio"
+					name="budget"
+					id="1500"
+					value="500-1.5k"
+					checked={data?.budget === '500-1.5k' || false}
+					bind:group={selectedBudget}
+				/>
 				<label
 					for="1500"
 					class="focus-within:border-[--pink] text-base sm:text-2xl whitespace-nowrap border-2 border-slate-500 rounded-full py-2 px-4 cursor-pointer"
 				>
-					<input
-						type="radio"
-						name="budget"
-						id="1500"
-						value="500-1.5k"
-						checked={data?.budget === '500-1.5k' || false}
-						bind:group={selectedBudget}
-						class=""
-					/>
 					€ 500 - 1.5k
 				</label>
 
+				<input
+					type="radio"
+					name="budget"
+					id="3000"
+					value="1.5k-3k"
+					checked={data?.budget === '1.5k-3k' || false}
+					bind:group={selectedBudget}
+				/>
 				<label
 					for="3000"
 					class="focus-within:border-[--pink] text-base sm:text-2xl whitespace-nowrap border-2 border-slate-500 rounded-full py-2 px-4 cursor-pointer"
 				>
-					<input
-						type="radio"
-						name="budget"
-						id="3000"
-						value="1.5k-3k"
-						checked={data?.budget === '1.5k-3k' || false}
-						bind:group={selectedBudget}
-						class=""
-					/>
 					€ 1.5k - 3k
 				</label>
 
+				<input
+					type="radio"
+					name="budget"
+					id="5000"
+					value="3k-5k"
+					checked={data?.budget === '3k-5k' || false}
+					bind:group={selectedBudget}
+				/>
 				<label
 					for="5000"
 					class="focus-within:border-[--pink] text-base sm:text-2xl whitespace-nowrap border-2 border-slate-500 rounded-full py-2 px-4 cursor-pointer"
 				>
-					<input
-						type="radio"
-						name="budget"
-						id="5000"
-						value="3k-5k"
-						checked={data?.budget === '3k-5k' || false}
-						bind:group={selectedBudget}
-						class=""
-					/>
 					€ 3k - 5k
 				</label>
 
+				<input
+					type="radio"
+					name="budget"
+					id="10000"
+					value="5k-10k"
+					checked={data?.budget === '5k-10k' || false}
+					bind:group={selectedBudget}
+				/>
 				<label
 					for="10000"
 					class="focus-within:border-[--pink] text-base sm:text-2xl whitespace-nowrap border-2 border-slate-500 rounded-full py-2 px-4 cursor-pointer"
 				>
-					<input
-						type="radio"
-						name="budget"
-						id="10000"
-						value="5k-10k"
-						checked={data?.budget === '5k-10k' || false}
-						bind:group={selectedBudget}
-						class=""
-					/>
 					€ 5k - 10k
 				</label>
 
+				<input
+					type="radio"
+					name="budget"
+					id="max"
+					value="10k+"
+					checked={data?.budget === '10k+' || false}
+					bind:group={selectedBudget}
+				/>
 				<label
 					for="max"
 					class="focus-within:border-[--pink] text-base sm:text-2xl whitespace-nowrap border-2 border-slate-500 rounded-full py-2 px-4 cursor-pointer"
 				>
-					<input
-						type="radio"
-						name="budget"
-						id="max"
-						value="10k+"
-						checked={data?.budget === '10k+' || false}
-						bind:group={selectedBudget}
-						class=""
-					/>
 					€ 10k+
 				</label>
 			</div>
@@ -209,7 +205,7 @@
 		</fieldset>
 
 		<div class="w-full mb-8 items-baseline">
-			<div class=" whitespace-nowrap mb-4 inline-block text-[--pink]">You can reach me at:</div>
+			<div class="whitespace-nowrap mb-4 inline-block text-[--pink]">You can reach me at:</div>
 			<input
 				type="email"
 				name="email"
@@ -239,11 +235,21 @@
 			{/if}
 		</div>
 
-		<div>
-			<button type="submit">Send</button>
+		<div class=" text-right">
+			<button type="submit" class="text-base sm:text-2xl whitespace-nowrap border-2 border-blue-500 bg-blue-500 rounded-full py-2 px-4 cursor-pointer hover:bg-blue-400 duration-200 hover:border-transparent">Send request</button>
 		</div>
 	</form>
 </div>
 
 <style>
+	input:checked + label {
+		border: 2px solid transparent;
+		background-color: var(--pink);
+	}
+
+	input[type='checkbox'],
+	input[type='radio'] {
+		/* visibility: hidden; */
+		display: none;
+	}
 </style>

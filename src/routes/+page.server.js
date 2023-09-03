@@ -20,19 +20,53 @@ export const actions = {
 
 			// if valid then
 			// email html template
+			// const html = `
+			// <div style="font-size: 1.2rem;">
+			// 	<p>Hi, my name is <b style="color: blue">${contactEmailData.name}</b> and I'm requesting these services</p>
+			// 	<p style="font-size: 2rem;"><b>Service:</b></p>
+			// 	<p style="font-size: 1.2rem; color: blue; line-height: 1.2rem;">${contactEmailData.service}</p>
+			// 	<p style="font-size: 2rem;"><b>My budget is</b></p>
+			// 	<p style="font-size: 1.2rem; color: blue; line-height: 1.2rem; "> ${contactEmailData.budget}</p>
+			// 	<p style="font-size: 2rem;"><b>Request message:</b></p>
+			// 	<p style="font-size: 1.2rem;">${contactEmailData.message}</p>
+			// 	<p style="font-size: 1.2rem;">You can contact me on ${contactEmailData.email}</p>
+			// </div>
+			// `;
 			const html = `
-			<div style="font-size: 1.2rem;">
-				<p>Hi, my name is <b style="color: blue">${contactEmailData.name}</b> and I'm requesting these services</p>
-				<p style="font-size: 2rem;"><b>Service:</b></p>
-				<p style="color: blue; line-height: 1.2rem;">${contactEmailData.service}</p>
-				<p style="font-size: 2rem;"><b>My budget is</b></p>
-				<p style="color: blue; line-height: 1.2rem; "> ${contactEmailData.budget}</p>
-				<p style="font-size: 2rem;"><b>Request message:</b></p>
-				<p >${contactEmailData.message}</p>
-				<p >You can contact me on ${contactEmailData.email}</p>
-			</div>
-			`;
-
+			<table>
+				<thead>
+					<tr style="padding: 8px; border:1px solid #ccc; background: #ccc;">
+						<th>Info</th>
+						<th>Data</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr style="">
+						<td style="padding: 8px; background: #eee;">Name</td>
+						<td style="padding: 8px;">${contactEmailData.name}</td>
+					</tr>
+					<tr>
+						<td style="padding: 8px; background: #eee;">Email</td>
+						<td style="padding: 8px;">${contactEmailData.email}</td>
+						
+					</tr>
+					<tr>
+						<td style="padding: 8px; background: #eee;">Services</td>
+						<td style="padding: 8px;">${contactEmailData.service}</td>
+						
+					</tr>
+					<tr>
+						<td style="padding: 8px; background: #eee;">Budget</td>
+						<td style="padding: 8px;">${contactEmailData.budget}</td>
+						
+					</tr>
+				</tbody>
+			</table>
+		
+			<hr />
+			<h3>Message</h3>
+			<p style="font-size: 1.2rem;">${contactEmailData.message}</p>
+				`;
 			// email message setup
 			const emailMessage = {
 				from: `"${contactEmailData.name}" <${contactEmailData.email}>`,
@@ -71,7 +105,6 @@ export const actions = {
 		return {
 			// if data pass zod validation -> return success
 			success: true
-
 		};
 	}
 };
