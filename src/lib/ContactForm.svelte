@@ -17,43 +17,37 @@
 	// onMount - get initial values for font size and textarea height to calculate height on input change when new line is added
 	onMount(() => {
 		const textareaEl = document.querySelector('textarea');
-		if (!textareaEl) return;
+		// if (!textareaEl) return;
 
-		textareaEl.style.height = textareaEl.scrollHeight + 'px';
 		textareaEl?.addEventListener('keyup', () => {
-			// textareaEl.style.height = calcHeight(textareaEl.value) + 'px';
 			textareaEl.style.height = AutoSize(textareaEl);
 		});
 
 		// AUTOSIZE TEXAREA TEST
 		function AutoSize(textareaEl) {
-			// textareaEl.className += 'js-autosize';
-
+			
 			function resize() {
-				// textareaEl.style.height = 'auto';
-
-				var height = textareaEl.scrollHeight;
+				let height = textareaEl.scrollHeight;
 
 				if (window.getComputedStyle) {
-					var styles = window.getComputedStyle(textareaEl);
-
+					const styles = window.getComputedStyle(textareaEl);
 					height -= parseInt(styles['padding-top']) + parseInt(styles['padding-bottom']);
 				}
 
-				textareaEl.style.height = height + 8 + 'px';
+				textareaEl.style.height = `${height + 8}px`;
 			}
 
 			if (!textareaEl.oninput) {
-				textareaEl.oninput = function () {
+				textareaEl.oninput = () => {
 					resize();
 				};
 			} else {
-				textareaEl.onkeyup = function () {
+				textareaEl.onkeyup = () => {
 					resize();
 				};
 			}
 
-			return { textareaEl: textareaEl, resize: resize };
+			return { textareaEl, resize };
 		}
 	});
 </script>
