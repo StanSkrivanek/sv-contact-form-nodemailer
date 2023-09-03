@@ -18,22 +18,38 @@ export const actions = {
 			// try validate data
 			contactEmailSchema.parse(contactEmailData);
 
-			// if valid send email
+			// if valid then
+			// email html template
+			const html = `
+			<div style="font-size: 1.2rem;">
+				<p>Hi, my name is <b style="color: blue">${contactEmailData.name}</b> and I'm requesting these services</p>
+				<p style="font-size: 2rem;"><b>Service:</b></p>
+				<p style="color: blue; line-height: 1.2rem;">${contactEmailData.service}</p>
+				<p style="font-size: 2rem;"><b>My budget is</b></p>
+				<p style="color: blue; line-height: 1.2rem; "> ${contactEmailData.budget}</p>
+				<p style="font-size: 2rem;"><b>Request message:</b></p>
+				<p >${contactEmailData.message}</p>
+				<p >You can contact me on ${contactEmailData.email}</p>
+			</div>
+			`;
+
+			// email message setup
 			const emailMessage = {
 				from: `"${contactEmailData.name}" <${contactEmailData.email}>`,
 				to: GOOGLE_EMAIL,
-				subject: `New message from ${contactEmailData.name}`,
-				text: `Name: ${contactEmailData.name}\nEmail: ${contactEmailData.email}\nService: ${contactEmailData.service}\nBudget: ${contactEmailData.budget}\nMessage: ${contactEmailData.message}`
+				subject: `New message from Profile website`,
+				html
+				// text: `Name: ${contactEmailData.name}\nEmail: ${contactEmailData.email}\nService: ${contactEmailData.service}\nBudget: ${contactEmailData.budget}\nMessage: ${contactEmailData.message}`
 			};
 			// @ts-ignore
 			const sendEmail = async (emailMessage) => {
 				await new Promise((resolve, reject) => {
 					transporter.sendMail(emailMessage, (err, info) => {
 						if (err) {
-							console.log(err);
+							console.log('transporter ERR', err);
 							reject(err);
 						} else {
-							console.log(info);
+							console.log('transporter messageId', info.messageId);
 							resolve(info);
 						}
 					});
@@ -53,13 +69,9 @@ export const actions = {
 		}
 
 		return {
-			// if data pass zod validatin -> return success
+			// if data pass zod validation -> return success
 			success: true
-			// after successful submission I'm getting error
-			// Unhandled Promise Rejection: TypeError: undefined is not an object (evaluating 'ctx[0]?.data.name')
-			// prevent [ctx].data from being undefined
-			// Is there any other way than do this?
-			// data: { ...contactEmailData }
+
 		};
 	}
 };
