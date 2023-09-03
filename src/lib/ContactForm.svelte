@@ -14,7 +14,7 @@
 	$: selectedServices = [];
 	$: selectedBudget = '';
 
-	// onMount - get initial values for font size and textarea height to calculate height on input change when new line is added
+	// onMount - set initial height of textarea to fit content (if any) on page load and add event listener to resize textarea on keyup event
 	onMount(() => {
 		const textareaEl = document.querySelector('textarea');
 		// if (!textareaEl) return;
@@ -23,9 +23,8 @@
 			textareaEl.style.height = AutoSize(textareaEl);
 		});
 
-		// AUTOSIZE TEXAREA TEST
+		// AUTOSIZE TEXTAREA 
 		function AutoSize(textareaEl) {
-			
 			function resize() {
 				let height = textareaEl.scrollHeight;
 
@@ -270,7 +269,6 @@
 
 	input[type='checkbox'],
 	input[type='radio'] {
-		/* visibility: hidden; */
 		display: none;
 	}
 
