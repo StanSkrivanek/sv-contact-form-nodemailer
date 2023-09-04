@@ -1,10 +1,10 @@
 <script>
 	// @ts-nocheck
-import * as z from 'zod';
 	import { enhance } from '$app/forms';
 	import { onMount } from 'svelte';
 	import { cubicIn, cubicOut } from 'svelte/easing';
 	import { fly } from 'svelte/transition';
+	import * as z from 'zod';
 	/**
 	 * @type {ActionData}
 	 */
@@ -82,9 +82,18 @@ out:fly={{ delay: 200, duration: 800, easing: cubicIn, y: 100, x: 0 }} -->
 		<div class=" w-full mb-8 items-baseline">
 			<div class="whitespace-nowrap mb-4 inline-block text-[--pink]">Hi! My name is</div>
 			<input
+				on:blur={() => {
+					// check name field for errors on blur with zod
+					const name = z.string().min(2).max(30).nonempty().parse(data?.name);
+					// if no errors, remove error message
+					if (!name.error) {
+						form.errors = { ...form.errors, name: null };
+					}
+				}}
 				type="text"
 				name="name"
 				id="name"
+				required
 				placeholder="Type your name*"
 				value={form?.errors ? data?.name : ''}
 				class="w-full bg-inherit pb-2 border-b border-b-slate-500 focus:outline-none focus:ring-1 focus:ring-inset focus:ring-transparent focus:pb-2 focus:border-b-[--pink]"
