@@ -1,10 +1,10 @@
 <script>
 	// @ts-nocheck
-
+import * as z from 'zod';
 	import { enhance } from '$app/forms';
-	// import { ActionData } from "$app/types";
 	import { onMount } from 'svelte';
-
+	import { cubicIn, cubicOut } from 'svelte/easing';
+	import { fly } from 'svelte/transition';
 	/**
 	 * @type {ActionData}
 	 */
@@ -13,7 +13,18 @@
 	$: data = form?.data;
 	$: selectedServices = [];
 	$: selectedBudget = '';
-
+	$: isToastOpen = false;
+	// if form?.success is true, show toast
+	$: if (form?.success && !isToastOpen) {
+		isToastOpen = true;
+		setTimeout(() => {
+			if (isToastOpen) {
+				form.success = false;
+				isToastOpen = false;
+			}
+		}, 5000);
+	}
+	// $: console.log('🚀 ~ file: ContactForm.svelte:17 ~ isToastOpen:', isToastOpen);
 	// onMount - set initial height of textarea to fit content (if any) on page load and add event listener to resize textarea on keyup event
 	onMount(() => {
 		const textareaEl = document.querySelector('textarea');
@@ -23,7 +34,7 @@
 			textareaEl.style.height = AutoSize(textareaEl);
 		});
 
-		// AUTOSIZE TEXTAREA 
+		// AUTOSIZE TEXTAREA
 		function AutoSize(textareaEl) {
 			function resize() {
 				let height = textareaEl.scrollHeight;
@@ -51,6 +62,21 @@
 	});
 </script>
 
+<!-- in:fly={{ duration: 800, easing: cubicOut, y: -100, x: 0 }}
+out:fly={{ delay: 200, duration: 800, easing: cubicIn, y: 100, x: 0 }} -->
+{#if isToastOpen}
+	<div
+		role="alert"
+		aria-live="assertive"
+		aria-atomic="true"
+		in:fly={{ duration: 800, easing: cubicOut, y: -100, x: 0 }}
+		out:fly={{ delay: 200, duration: 800, easing: cubicIn, y: -100, x: 0 }}
+		class="toast fixed top-0 end-0 m-3 p-4 rounded text-2xl sm:text-lg font-light sm:font-light uppercase bg-slate-100"
+	>
+		<p class="text-[--pink]">Thank you for your request!</p>
+		<p class="text-[--pink]">I will contact you shortly.</p>
+	</div>
+{/if}
 <div>
 	<form method="POST" class="text-2xl sm:text-4xl font-light sm:font-thin uppercase" use:enhance>
 		<div class=" w-full mb-8 items-baseline">
@@ -61,7 +87,6 @@
 				id="name"
 				placeholder="Type your name*"
 				value={form?.errors ? data?.name : ''}
-				required
 				class="w-full bg-inherit pb-2 border-b border-b-slate-500 focus:outline-none focus:ring-1 focus:ring-inset focus:ring-transparent focus:pb-2 focus:border-b-[--pink]"
 			/>
 			{#if form?.errors?.name}
@@ -222,7 +247,6 @@
 				id="email"
 				placeholder="Type your contact email*"
 				value={data?.email || ''}
-				required
 				class="w-full h-full bg-inherit pb-2 border-b border-b-slate-500 focus:outline-none focus:ring focus:ring-inset focus:ring-transparent focus:pb-2 focus:border-b-[--pink]"
 			/>
 			{#if form?.errors?.email}
@@ -238,7 +262,6 @@
 				id="message"
 				placeholder="Type your request* "
 				value={form?.errors ? data?.message : ''}
-				required
 				class="resize-none w-full bg-inherit pb-2 border-b border-b-slate-500 focus:outline-none focus:ring focus:ring-inset focus:ring-transparent focus:pb-2 focus:border-b-[--pink]"
 			/>
 			{#if form?.errors?.message}
@@ -250,7 +273,7 @@
 			<button
 				type="submit"
 				class="text-base sm:text-2xl whitespace-nowrap border-2 border-blue-500 bg-blue-500 rounded-full py-2 px-4 cursor-pointer hover:bg-blue-400 duration-200 hover:border-transparent"
-				>Send request</button
+				>Send Request</button
 			>
 		</div>
 	</form>

@@ -81,7 +81,6 @@ export const actions = {
 			// @ts-ignore
 			const { fieldErrors } = err.flatten();
 			const { ...rest } = contactEmailData;
-			console.log(fieldErrors);
 			return {
 				errors: fieldErrors,
 				data: rest
