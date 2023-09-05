@@ -93,14 +93,14 @@ out:fly={{ delay: 200, duration: 800, easing: cubicIn, y: 100, x: 0 }} -->
 				on:blur={(e) => {
 					// validate with zod on client side
 					try {
-						// check if form has errors
+						// check if form has error on picked field and if so, remove it
 						contactEmailSchema.pick({ name: true }).parse({ name: e.target.value });
-						// if name validation pass set name error to null
+
+						// if validation pass set name error to null
 						form.errors.name = null;
 					} catch (error) {
-						// console.log(error.formErrors.fieldErrors);
 						errors = error.formErrors.fieldErrors;
-						console.log('CATCH', errors);
+			
 					}
 				}}
 			/>
@@ -264,16 +264,11 @@ out:fly={{ delay: 200, duration: 800, easing: cubicIn, y: 100, x: 0 }} -->
 				value={data?.email || ''}
 				class="w-full h-full bg-inherit pb-2 border-b border-b-slate-500 focus:outline-none focus:ring focus:ring-inset focus:ring-transparent focus:pb-2 focus:border-b-[--pink]"
 				on:blur={(e) => {
-					// validate with zod
 					try {
-						// check if form has errors
-
 						contactEmailSchema.pick({ email: true }).parse({ email: e.target.value });
 						form.errors.email = null;
 					} catch (error) {
-						// console.log(error.formErrors.fieldErrors);
 						errors = error.formErrors.fieldErrors;
-						console.log('CATCH', errors);
 					}
 				}}
 			/>
@@ -292,16 +287,12 @@ out:fly={{ delay: 200, duration: 800, easing: cubicIn, y: 100, x: 0 }} -->
 				value={form?.errors ? data?.message : ''}
 				class="resize-none w-full bg-inherit pb-2 border-b border-b-slate-500 focus:outline-none focus:ring focus:ring-inset focus:ring-transparent focus:pb-2 focus:border-b-[--pink]"
 				on:blur={(e) => {
-					// validate with zod
 					try {
-						// check if form has errors
-
 						contactEmailSchema.pick({ message: true }).parse({ message: e.target.value });
 						form.errors.message = null;
 					} catch (error) {
-						// console.log(error.formErrors.fieldErrors);
 						errors = error.formErrors.fieldErrors;
-						console.log('CATCH', errors);
+						
 					}
 				}}
 			/>
