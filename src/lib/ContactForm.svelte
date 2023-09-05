@@ -1,16 +1,17 @@
 <script>
 	// @ts-nocheck
 	import { enhance } from '$app/forms';
+	import { contactEmailSchema } from '$lib/types';
 	import { onMount } from 'svelte';
 	import { cubicIn, cubicOut } from 'svelte/easing';
 	import { fly } from 'svelte/transition';
-	import * as z from 'zod';
 	/**
 	 * @type {ActionData}
 	 */
 	export let form;
 
 	$: data = form?.data;
+	$: errors = form?.errors;
 	$: selectedServices = [];
 	$: selectedBudget = '';
 	$: isToastOpen = false;
@@ -24,6 +25,7 @@
 			}
 		}, 5000);
 	}
+
 	// $: console.log('🚀 ~ file: ContactForm.svelte:17 ~ isToastOpen:', isToastOpen);
 	// onMount - set initial height of textarea to fit content (if any) on page load and add event listener to resize textarea on keyup event
 	onMount(() => {
@@ -82,24 +84,28 @@ out:fly={{ delay: 200, duration: 800, easing: cubicIn, y: 100, x: 0 }} -->
 		<div class=" w-full mb-8 items-baseline">
 			<div class="whitespace-nowrap mb-4 inline-block text-[--pink]">Hi! My name is</div>
 			<input
-				on:blur={() => {
-					// check name field for errors on blur with zod
-					const name = z.string().min(2).max(30).nonempty().parse(data?.name);
-					// if no errors, remove error message
-					if (!name.error) {
-						form.errors = { ...form.errors, name: null };
-					}
-				}}
 				type="text"
 				name="name"
 				id="name"
-				required
 				placeholder="Type your name*"
 				value={form?.errors ? data?.name : ''}
 				class="w-full bg-inherit pb-2 border-b border-b-slate-500 focus:outline-none focus:ring-1 focus:ring-inset focus:ring-transparent focus:pb-2 focus:border-b-[--pink]"
+				on:blur={(e) => {
+					// validate with zod on client side
+					try {
+						// check if form has errors
+						contactEmailSchema.pick({ name: true }).parse({ name: e.target.value });
+						// if name validation pass set name error to null
+						form.errors.name = null;
+					} catch (error) {
+						// console.log(error.formErrors.fieldErrors);
+						errors = error.formErrors.fieldErrors;
+						console.log('CATCH', errors);
+					}
+				}}
 			/>
-			{#if form?.errors?.name}
-				<span class="text-sm font-normal bg-rose-500 p-2">{form?.errors?.name[0]}</span>
+			{#if errors && errors.name}
+				<span class="text-sm font-normal bg-rose-500 p-2">{errors.name[0]}</span>
 			{/if}
 		</div>
 
@@ -121,7 +127,7 @@ out:fly={{ delay: 200, duration: 800, easing: cubicIn, y: 100, x: 0 }} -->
 				<label
 					id="service-label-1"
 					for="service-1"
-					class="text-base sm:text-2xl whitespace-nowrap border-2 border-slate-500 rounded-full py-2 px-4 cursor-pointer"
+					class="text-base sm:text-2xl whitespace-nowrap border-2 border-slate-500 rounded-full py-2 px-4 cursor-pointer focus-within:border-[--pink]"
 				>
 					Website Development
 				</label>
@@ -257,9 +263,22 @@ out:fly={{ delay: 200, duration: 800, easing: cubicIn, y: 100, x: 0 }} -->
 				placeholder="Type your contact email*"
 				value={data?.email || ''}
 				class="w-full h-full bg-inherit pb-2 border-b border-b-slate-500 focus:outline-none focus:ring focus:ring-inset focus:ring-transparent focus:pb-2 focus:border-b-[--pink]"
+				on:blur={(e) => {
+					// validate with zod
+					try {
+						// check if form has errors
+
+						contactEmailSchema.pick({ email: true }).parse({ email: e.target.value });
+						form.errors.email = null;
+					} catch (error) {
+						// console.log(error.formErrors.fieldErrors);
+						errors = error.formErrors.fieldErrors;
+						console.log('CATCH', errors);
+					}
+				}}
 			/>
-			{#if form?.errors?.email}
-				<span class="text-sm font-normal bg-rose-500 p-2">{form?.errors?.email}</span>
+			{#if errors && errors.email}
+				<span class="text-sm font-normal bg-rose-500 p-2">{errors.email[0]}</span>
 			{/if}
 		</div>
 
@@ -272,9 +291,22 @@ out:fly={{ delay: 200, duration: 800, easing: cubicIn, y: 100, x: 0 }} -->
 				placeholder="Type your request* "
 				value={form?.errors ? data?.message : ''}
 				class="resize-none w-full bg-inherit pb-2 border-b border-b-slate-500 focus:outline-none focus:ring focus:ring-inset focus:ring-transparent focus:pb-2 focus:border-b-[--pink]"
+				on:blur={(e) => {
+					// validate with zod
+					try {
+						// check if form has errors
+
+						contactEmailSchema.pick({ message: true }).parse({ message: e.target.value });
+						form.errors.message = null;
+					} catch (error) {
+						// console.log(error.formErrors.fieldErrors);
+						errors = error.formErrors.fieldErrors;
+						console.log('CATCH', errors);
+					}
+				}}
 			/>
-			{#if form?.errors?.message}
-				<span class="text-sm font-normal bg-rose-500 p-2">{form?.errors?.message}</span>
+			{#if errors && errors.message}
+				<span class="text-sm font-normal bg-rose-500 p-2">{errors.message[0]}</span>
 			{/if}
 		</div>
 
@@ -299,9 +331,12 @@ out:fly={{ delay: 200, duration: 800, easing: cubicIn, y: 100, x: 0 }} -->
 		background-color: var(--pink);
 	}
 
+	input:focus + label {
+		border: 2px solid var(--pink);
+	}
 	input[type='checkbox'],
 	input[type='radio'] {
-		display: none;
+		appearance: none;
 	}
 
 	/* force input style on autofill */

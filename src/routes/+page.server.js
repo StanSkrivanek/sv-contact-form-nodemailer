@@ -59,7 +59,6 @@ export const actions = {
 				to: GOOGLE_EMAIL,
 				subject: `New message from Profile website`,
 				html
-				// text: `Name: ${contactEmailData.name}\nEmail: ${contactEmailData.email}\nService: ${contactEmailData.service}\nBudget: ${contactEmailData.budget}\nMessage: ${contactEmailData.message}`
 			};
 			// @ts-ignore
 			const sendEmail = async (emailMessage) => {
