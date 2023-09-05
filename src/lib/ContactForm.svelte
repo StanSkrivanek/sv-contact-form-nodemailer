@@ -5,12 +5,16 @@
 	import { onMount } from 'svelte';
 	import { cubicIn, cubicOut } from 'svelte/easing';
 	import { fly } from 'svelte/transition';
+	// import {formData} from '$lib/stores';
+	
 	/**
 	 * @type {ActionData}
 	 */
 	export let form;
-
+	
+	// $: console.log("🚀 ~ file: ContactForm.svelte:9 ~ formData:", formData)
 	$: data = form?.data;
+	// $: console.log('🚀 ~ file: ContactForm.svelte:14 ~ data:', data);
 	$: errors = form?.errors;
 	$: selectedServices = [];
 	$: selectedBudget = '';
@@ -91,16 +95,17 @@ out:fly={{ delay: 200, duration: 800, easing: cubicIn, y: 100, x: 0 }} -->
 				value={form?.errors ? data?.name : ''}
 				class="w-full bg-inherit pb-2 border-b border-b-slate-500 focus:outline-none focus:ring-1 focus:ring-inset focus:ring-transparent focus:pb-2 focus:border-b-[--pink]"
 				on:blur={(e) => {
-					// validate with zod on client side
+					// validate with zod
 					try {
-						// check if form has error on picked field and if so, remove it
+						// check if form has errors
 						contactEmailSchema.pick({ name: true }).parse({ name: e.target.value });
-
-						// if validation pass set name error to null
-						form.errors.name = null;
+						errors = form?.errors;
+						console.log('CATCH', errors);
+						data = { ...data, name: e.target.value };
 					} catch (error) {
+						// console.log(error.formErrors.fieldErrors);
 						errors = error.formErrors.fieldErrors;
-			
+						console.log('CATCH', errors);
 					}
 				}}
 			/>
@@ -266,9 +271,11 @@ out:fly={{ delay: 200, duration: 800, easing: cubicIn, y: 100, x: 0 }} -->
 				on:blur={(e) => {
 					try {
 						contactEmailSchema.pick({ email: true }).parse({ email: e.target.value });
-						form.errors.email = null;
+						errors = form?.errors;
+						data = { ...data, email: e.target.value };
 					} catch (error) {
 						errors = error.formErrors.fieldErrors;
+						console.log('CATCH', errors);
 					}
 				}}
 			/>
@@ -277,7 +284,7 @@ out:fly={{ delay: 200, duration: 800, easing: cubicIn, y: 100, x: 0 }} -->
 			{/if}
 		</div>
 
-		<div class="w-full mb-8 items-baseline">
+		<div class="relative w-full mb-8 items-baseline">
 			<div class="whitespace-nowrap mr-4 mb-6 inline-block text-[--pink]">Here is brief info:</div>
 			<textarea
 				rows="1"
@@ -286,23 +293,29 @@ out:fly={{ delay: 200, duration: 800, easing: cubicIn, y: 100, x: 0 }} -->
 				placeholder="Type your request* "
 				value={form?.errors ? data?.message : ''}
 				class="resize-none w-full bg-inherit pb-2 border-b border-b-slate-500 focus:outline-none focus:ring focus:ring-inset focus:ring-transparent focus:pb-2 focus:border-b-[--pink]"
-				on:blur={(e) => {
+				on:keyup={(e) => {
+					// validate with zod
 					try {
+
+						// check if form has errors
 						contactEmailSchema.pick({ message: true }).parse({ message: e.target.value });
-						form.errors.message = null;
+						errors = form?.errors;
+						// console.log('CATCH', errors);
+						data = { ...data, message: e.target.value };
 					} catch (error) {
+						// console.log(error.formErrors.fieldErrors);
 						errors = error.formErrors.fieldErrors;
-						
 					}
 				}}
 			/>
 			{#if errors && errors.message}
-				<span class="text-sm font-normal bg-rose-500 p-2">{errors.message[0]}</span>
+				<span class=" absolute -bottom-8 left-0 text-sm font-normal  p-2">{errors.message[0]}</span>
 			{/if}
 		</div>
 
 		<div class=" text-right">
 			<button
+				disabled={!data?.name || !data?.email || !data?.message || form?.errors}
 				type="submit"
 				class="text-base sm:text-2xl whitespace-nowrap border-2 border-blue-500 bg-blue-500 rounded-full py-2 px-4 cursor-pointer hover:bg-blue-400 duration-200 hover:border-transparent"
 				>Send Request</button
@@ -335,5 +348,9 @@ out:fly={{ delay: 200, duration: 800, easing: cubicIn, y: 100, x: 0 }} -->
 		background-color: transparent !important;
 		-webkit-box-shadow: 0 0 0 80px black inset;
 		-webkit-text-fill-color: #fff !important;
+	}
+	button:disabled {
+		cursor: not-allowed;
+		background: gray;
 	}
 </style>
