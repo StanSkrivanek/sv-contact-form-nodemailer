@@ -2,20 +2,20 @@
 	// @ts-nocheck
 	import { enhance } from '$app/forms';
 	import { contactEmailSchema } from '$lib/types';
+	import { error } from '@sveltejs/kit';
 	import { onMount } from 'svelte';
 	import { cubicIn, cubicOut } from 'svelte/easing';
 	import { fly } from 'svelte/transition';
-	// import {formData} from '$lib/stores';
-	
+
 	/**
 	 * @type {ActionData}
 	 */
 	export let form;
-	
-	// $: console.log("🚀 ~ file: ContactForm.svelte:9 ~ formData:", formData)
+
 	$: data = form?.data;
-	// $: console.log('🚀 ~ file: ContactForm.svelte:14 ~ data:', data);
-	$: errors = form?.errors;
+	$: errors = {} || form?.errors;
+	$: console.log('🚀 ~ file: ContactForm.svelte:17 ~ errors:', errors);
+
 	$: selectedServices = [];
 	$: selectedBudget = '';
 	$: isToastOpen = false;
@@ -29,8 +29,13 @@
 			}
 		}, 5000);
 	}
-
-	// $: console.log('🚀 ~ file: ContactForm.svelte:17 ~ isToastOpen:', isToastOpen);
+	// function validate() {
+	// 	if (selectedServices.length === 0) {
+	// 		errors.services = ['Please select at least one service'];
+	// 	} else {
+	// 		errors.services = null;
+	// 	}
+	// }
 	// onMount - set initial height of textarea to fit content (if any) on page load and add event listener to resize textarea on keyup event
 	onMount(() => {
 		const textareaEl = document.querySelector('textarea');
@@ -68,8 +73,6 @@
 	});
 </script>
 
-<!-- in:fly={{ duration: 800, easing: cubicOut, y: -100, x: 0 }}
-out:fly={{ delay: 200, duration: 800, easing: cubicIn, y: 100, x: 0 }} -->
 {#if isToastOpen}
 	<div
 		role="alert"
@@ -87,6 +90,7 @@ out:fly={{ delay: 200, duration: 800, easing: cubicIn, y: 100, x: 0 }} -->
 	<form method="POST" class="text-2xl sm:text-4xl font-light sm:font-thin uppercase" use:enhance>
 		<div class=" w-full mb-8 items-baseline">
 			<div class="whitespace-nowrap mb-4 inline-block text-[--pink]">Hi! My name is</div>
+
 			<input
 				type="text"
 				name="name"
@@ -95,7 +99,6 @@ out:fly={{ delay: 200, duration: 800, easing: cubicIn, y: 100, x: 0 }} -->
 				value={form?.errors ? data?.name : ''}
 				class="w-full bg-inherit pb-2 border-b border-b-slate-500 focus:outline-none focus:ring-1 focus:ring-inset focus:ring-transparent focus:pb-2 focus:border-b-[--pink]"
 				on:blur={(e) => {
-					// validate with zod
 					try {
 						// check if form has errors
 						contactEmailSchema.pick({ name: true }).parse({ name: e.target.value });
@@ -109,7 +112,7 @@ out:fly={{ delay: 200, duration: 800, easing: cubicIn, y: 100, x: 0 }} -->
 					}
 				}}
 			/>
-			{#if errors && errors.name}
+			{#if errors?.name}
 				<span class="text-sm font-normal bg-rose-500 p-2">{errors.name[0]}</span>
 			{/if}
 		</div>
@@ -169,8 +172,10 @@ out:fly={{ delay: 200, duration: 800, easing: cubicIn, y: 100, x: 0 }} -->
 					Website Maintenance
 				</label>
 			</div>
-			{#if form?.errors?.service}
-				<span class="text-sm font-normal bg-rose-500 p-2">{form?.errors?.service}</span>
+			{#if errors?.services || form?.errors?.service}
+				<span class="text-sm font-normal bg-rose-500 p-2"
+					>{error.services[0] || form?.errors?.service}</span
+				>
 			{/if}
 		</fieldset>
 
@@ -268,7 +273,7 @@ out:fly={{ delay: 200, duration: 800, easing: cubicIn, y: 100, x: 0 }} -->
 				placeholder="Type your contact email*"
 				value={data?.email || ''}
 				class="w-full h-full bg-inherit pb-2 border-b border-b-slate-500 focus:outline-none focus:ring focus:ring-inset focus:ring-transparent focus:pb-2 focus:border-b-[--pink]"
-				on:blur={(e) => {
+				on:change={(e) => {
 					try {
 						contactEmailSchema.pick({ email: true }).parse({ email: e.target.value });
 						errors = form?.errors;
@@ -279,7 +284,7 @@ out:fly={{ delay: 200, duration: 800, easing: cubicIn, y: 100, x: 0 }} -->
 					}
 				}}
 			/>
-			{#if errors && errors.email}
+			{#if errors?.email}
 				<span class="text-sm font-normal bg-rose-500 p-2">{errors.email[0]}</span>
 			{/if}
 		</div>
@@ -296,7 +301,6 @@ out:fly={{ delay: 200, duration: 800, easing: cubicIn, y: 100, x: 0 }} -->
 				on:keyup={(e) => {
 					// validate with zod
 					try {
-
 						// check if form has errors
 						contactEmailSchema.pick({ message: true }).parse({ message: e.target.value });
 						errors = form?.errors;
@@ -309,13 +313,17 @@ out:fly={{ delay: 200, duration: 800, easing: cubicIn, y: 100, x: 0 }} -->
 				}}
 			/>
 			{#if errors && errors.message}
-				<span class=" absolute -bottom-8 left-0 text-sm font-normal  p-2">{errors.message[0]}</span>
+				<span class=" absolute -bottom-8 left-0 text-sm font-normal p-2">{errors.message[0]}</span>
 			{/if}
 		</div>
 
 		<div class=" text-right">
 			<button
-				disabled={!data?.name || !data?.email || !data?.message || form?.errors}
+				disabled={!data?.name ||
+					!data?.email ||
+					!data?.message ||
+					selectedServices.length === 0 ||
+					selectedBudget === ''}
 				type="submit"
 				class="text-base sm:text-2xl whitespace-nowrap border-2 border-blue-500 bg-blue-500 rounded-full py-2 px-4 cursor-pointer hover:bg-blue-400 duration-200 hover:border-transparent"
 				>Send Request</button
@@ -352,5 +360,7 @@ out:fly={{ delay: 200, duration: 800, easing: cubicIn, y: 100, x: 0 }} -->
 	button:disabled {
 		cursor: not-allowed;
 		background: gray;
+		border: transparent;
+		opacity: 0.5;
 	}
 </style>
