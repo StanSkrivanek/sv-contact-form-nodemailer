@@ -14,7 +14,6 @@
 
 	$: data = form?.data;
 	$: errors = {} || form?.errors;
-	$: console.log('🚀 ~ file: ContactForm.svelte:17 ~ errors:', errors);
 
 	$: selectedServices = [];
 	$: selectedBudget = '';
@@ -29,13 +28,7 @@
 			}
 		}, 5000);
 	}
-	// function validate() {
-	// 	if (selectedServices.length === 0) {
-	// 		errors.services = ['Please select at least one service'];
-	// 	} else {
-	// 		errors.services = null;
-	// 	}
-	// }
+
 	// onMount - set initial height of textarea to fit content (if any) on page load and add event listener to resize textarea on keyup event
 	onMount(() => {
 		const textareaEl = document.querySelector('textarea');
@@ -103,12 +96,9 @@
 						// check if form has errors
 						contactEmailSchema.pick({ name: true }).parse({ name: e.target.value });
 						errors = form?.errors;
-						console.log('CATCH', errors);
 						data = { ...data, name: e.target.value };
 					} catch (error) {
-						// console.log(error.formErrors.fieldErrors);
 						errors = error.formErrors.fieldErrors;
-						console.log('CATCH', errors);
 					}
 				}}
 			/>
@@ -280,7 +270,6 @@
 						data = { ...data, email: e.target.value };
 					} catch (error) {
 						errors = error.formErrors.fieldErrors;
-						console.log('CATCH', errors);
 					}
 				}}
 			/>
@@ -299,15 +288,13 @@
 				value={form?.errors ? data?.message : ''}
 				class="resize-none w-full bg-inherit pb-2 border-b border-b-slate-500 focus:outline-none focus:ring focus:ring-inset focus:ring-transparent focus:pb-2 focus:border-b-[--pink]"
 				on:keyup={(e) => {
-					// validate with zod
+
 					try {
 						// check if form has errors
 						contactEmailSchema.pick({ message: true }).parse({ message: e.target.value });
 						errors = form?.errors;
-						// console.log('CATCH', errors);
 						data = { ...data, message: e.target.value };
-					} catch (error) {
-						// console.log(error.formErrors.fieldErrors);
+					} catch (error) {;
 						errors = error.formErrors.fieldErrors;
 					}
 				}}
